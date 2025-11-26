@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science Contents – Interactive</title>
+
+<style>
+    body {
+        font-family: "Comic Sans MS", Arial, sans-serif;
+        background: linear-gradient(#d6f3ff, #ffffff);
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    /* HEADER */
+    .header {
+        width: 100%;
+        height: 70px;
+        background: #ffffff;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        padding-right: 20px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .lang-container {
+        position: relative;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+    .lang-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid #0077cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        background: #ffffff;
+    }
+
+    .dropdown {
+        display: none;
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        width: 180px;
+        padding: 10px 0;
+        z-index: 200;
+    }
+
+    .dropdown a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        font-size: 16px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .dropdown a:hover { background: #f2f2f2; }
+
+    h1 {
+        text-align: center;
+        padding: 20px;
+        color: #0077cc;
+        font-size: 36px;
+        text-shadow: 2px 2px #ffffff;
+        margin-top: 20px;
+    }
+
+    .container { width: 95%; max-width: 900px; margin: auto; }
+    .topic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
+    .topic {
+        background: #fff;
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        border-left: 15px solid;
+        transition: transform .2s, box-shadow .2s;
+        text-decoration: none;
+        color: #333;
+    }
+    .topic:hover { transform: scale(1.03); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+
+    section {
+        background: #ffffff;
+        padding: 25px;
+        margin: 30px 0;
+        border-radius: 15px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    section h2 { font-size: 28px; margin-top: 0; }
+    section p { font-size: 16px; line-height: 1.6; }
+
+    #t1 { border-color: #00aaff; }
+    #t2 { border-color: #ff0099; }
+    #t3 { border-color: #33aa33; }
+    #t4 { border-color: #ff8800; }
+    #t5 { border-color: #aa5500; }
+    #t6 { border-color: #00b36b; }
+    #t7 { border-color: #cc0000; }
+    #t8 { border-color: #6633cc; }
+    #t9 { border-color: #0077aa; }
+    #t10 { border-color: #ff4444; }
+
+    html { scroll-behavior: smooth; }
+
+    @media (max-width: 768px) {
+        .topic { font-size: 18px; padding: 12px 16px; }
+        section h2 { font-size: 24px; }
+        section p { font-size: 15px; }
+    }
+    @media (max-width: 480px) {
+        .topic { font-size: 16px; padding: 10px 12px; }
+        section h2 { font-size: 22px; }
+        section p { font-size: 14px; }
+    }
+</style>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById("dropdownMenu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.lang-container')) {
+            document.getElementById("dropdownMenu").style.display = "none";
+        }
+    }
+
+    // Multilingual content
+    const content = {
+        en: {
+            title: "Science Contents",
+            topics: ["1. Scientific Skills","2. Science Room Rules","3. Living and Non-Living Things","4. Humans","5. Animals","6. Plants","7. Magnet","8. Absorption","9. Earth","10. Basic Structures"],
+            sections: [
+                "Scientific skills are abilities that help us explore and understand the world. These include observing, asking questions, performing experiments, recording results, and thinking logically.",
+                "Science room rules keep everyone safe. Wear protective gear, handle equipment properly, follow instructions, and keep the workspace clean.",
+                "Living things grow, move, reproduce, and respond to the environment. Non-living things do not. Examples: humans, animals, plants vs. rocks, water, chairs.",
+                "Humans are living beings capable of thinking, communicating, and adapting. Learn about body parts, senses, health, and hygiene.",
+                "Animals eat, move, breathe, and reproduce. They live on land, water, or air, and have different structures like legs, wings, or fins.",
+                "Plants are living organisms that produce their own food, provide oxygen, and support life. Includes roots, stems, leaves, flowers, and fruits.",
+                "Magnets attract certain metals like iron. They have north and south poles and are used in compasses, electronics, and tools.",
+                "Absorption is when one substance soaks up another. Examples: sponge absorbs water, roots absorb water and nutrients.",
+                "Earth is our planet with land, water, air, and life. Learn about continents, oceans, weather, and how to protect our environment.",
+                "Basic structures are shapes and arrangements in living and non-living things. Examples: bones, plant stems, building beams and walls."
+            ]
+        },
+        ms: {
+            title: "Kandungan Sains",
+            topics: ["1. Kemahiran Saintifik","2. Peraturan Bilik Sains","3. Hidup dan Bukan Hidup","4. Manusia","5. Haiwan","6. Tumbuhan","7. Magnet","8. Penyerapan","9. Bumi","10. Struktur Asas"],
+            sections: [
+                "Kemahiran saintifik membantu kita meneroka dunia. Termasuk pemerhatian, bertanya soalan, menjalankan eksperimen, merekod keputusan, dan berfikir secara logik.",
+                "Peraturan bilik sains memastikan keselamatan. Pakai peralatan pelindung, gunakan alat dengan betul, ikut arahan, dan jaga kebersihan.",
+                "Makhluk hidup membesar, bergerak, membiak, dan bertindak balas. Bukan hidup tidak. Contoh: manusia, haiwan, tumbuhan vs. batu, air, kerusi.",
+                "Manusia adalah makhluk hidup yang mampu berfikir, berkomunikasi, dan menyesuaikan diri. Pelajari bahagian badan, deria, kesihatan, dan kebersihan.",
+                "Haiwan makan, bergerak, bernafas, dan membiak. Mereka tinggal di tanah, air, atau udara dan mempunyai struktur berbeza seperti kaki, sayap, atau sirip.",
+                "Tumbuhan adalah makhluk hidup yang menghasilkan makanan sendiri, menyediakan oksigen, dan menyokong kehidupan. Termasuk akar, batang, daun, bunga, dan buah.",
+                "Magnet menarik logam tertentu seperti besi. Ia mempunyai kutub utara dan selatan dan digunakan dalam kompas, elektronik, dan alat.",
+                "Penyerapan ialah proses sesuatu menyerap benda lain. Contoh: span menyerap air, akar menyerap air dan nutrien.",
+                "Bumi adalah planet kita dengan tanah, air, udara, dan kehidupan. Pelajari benua, lautan, cuaca, dan cara melindungi alam sekitar.",
+                "Struktur asas ialah bentuk dan susunan dalam benda hidup dan bukan hidup. Contoh: tulang, batang tumbuhan, rasuk dan dinding bangunan."
+            ]
+        },
+        hi: {
+            title:"विज्ञान सामग्री",
+            topics:["1. वैज्ञानिक कौशल","2. विज्ञान कक्षा नियम","3. जीव और निर्जीव वस्तुएँ","4. मानव","5. जानवर","6. पौधे","7. चुंबक","8. अवशोषण","9. पृथ्वी","10. बुनियादी संरचनाएँ"],
+            sections:[
+                "वैज्ञानिक कौशल हमें दुनिया को समझने और खोज करने में मदद करते हैं। इसमें अवलोकन करना, प्रश्न पूछना, प्रयोग करना, परिणाम रिकॉर्ड करना और तर्कसंगत सोचना शामिल है।",
+                "विज्ञान कक्षा के नियम सुरक्षा बनाए रखते हैं। सुरक्षात्मक गियर पहनें, उपकरणों का सही उपयोग करें, निर्देशों का पालन करें और कार्यक्षेत्र को साफ रखें।",
+                "जीव बढ़ते हैं, चलते हैं, प्रजनन करते हैं और पर्यावरण पर प्रतिक्रिया करते हैं। निर्जीव नहीं। उदाहरण: मानव, जानवर, पौधे बनाम पत्थर, पानी, कुर्सी।",
+                "मानव सोच सकते हैं, संवाद कर सकते हैं और अनुकूलित कर सकते हैं। शरीर के हिस्से, इन्द्रियाँ, स्वास्थ्य और स्वच्छता सीखें।",
+                "जानवर खाते हैं, चलते हैं, सांस लेते हैं और प्रजनन करते हैं। वे जमीन, पानी या हवा में रहते हैं और उनके पास अलग-अलग संरचनाएँ होती हैं।",
+                "पौधे जीवित होते हैं, अपना भोजन बनाते हैं, ऑक्सीजन प्रदान करते हैं और जीवन का समर्थन करते हैं। इसमें जड़, तना, पत्ते, फूल और फल शामिल हैं।",
+                "चुंबक कुछ धातुओं को आकर्षित करते हैं जैसे लोहे। उनके पास उत्तरी और दक्षिणी ध्रुव होते हैं और कंपास, इलेक्ट्रॉनिक्स और उपकरणों में उपयोग होते हैं।",
+                "अवशोषण वह प्रक्रिया है जिसमें एक पदार्थ दूसरे को सोखता है। उदाहरण: स्पंज पानी सोखता है, जड़ें पानी और पोषक तत्व सोखती हैं।",
+                "पृथ्वी हमारा ग्रह है जिसमें भूमि, पानी, हवा और जीवन है। महाद्वीप, महासागर, मौसम और पर्यावरण की सुरक्षा सीखें।",
+                "बुनियादी संरचनाएँ जीवित और निर्जीव वस्तुओं में भागों का रूप और व्यवस्था होती हैं। उदाहरण: हड्डियाँ, पौधों की तने, भवन की बीम और दीवारें।"
+            ]
+        },
+        ar: {
+            title:"محتويات العلوم",
+            topics:["1. المهارات العلمية","2. قواعد مختبر العلوم","3. الكائنات الحية وغير الحية","4. البشر","5. الحيوانات","6. النباتات","7. المغناطيس","8. الامتصاص","9. الأرض","10. الهياكل الأساسية"],
+            sections:[
+                "المهارات العلمية هي القدرات التي تساعدنا على استكشاف العالم وفهمه. تشمل الملاحظة، وطرح الأسئلة، وإجراء التجارب، وتسجيل النتائج، والتفكير المنطقي.",
+                "قواعد مختبر العلوم تحافظ على السلامة. ارتدِ معدات الوقاية، استخدم الأجهزة بشكل صحيح، اتبع التعليمات وحافظ على نظافة المكان.",
+                "الكائنات الحية تنمو، تتحرك، تتكاثر، وتستجيب للبيئة. الكائنات غير الحية لا تفعل ذلك. مثال: البشر، الحيوانات، النباتات مقابل الصخور، الماء، الكراسي.",
+                "البشر كائنات حية قادرة على التفكير والتواصل والتكيف. تعلم عن أجزاء الجسم والحواس والصحة والنظافة.",
+                "الحيوانات تأكل، تتحرك، تتنفس، وتتكاثر. تعيش على الأرض أو الماء أو الهواء ولديها هياكل مختلفة مثل الأرجل والأجنحة والزعانف.",
+                "النباتات كائنات حية تصنع غذائها بنفسها وتوفر الأكسجين وتدعم الحياة. تشمل الجذور والسيقان والأوراق والزهور والثمار.",
+                "المغناطيس يجذب معادن معينة مثل الحديد. له قطب شمال وقطب جنوب ويستخدم في البوصلة والإلكترونيات والأدوات.",
+                "الامتصاص هو عملية امتصاص مادة لشيء آخر. مثال: الإسفنج يمتص الماء، وتمتص الجذور الماء والعناصر الغذائية.",
+                "الأرض هي كوكبنا الذي يحتوي على الأرض والماء والهواء والكائنات الحية. تعلم عن القارات والمحيطات والطقس وكيفية حماية البيئة.",
+                "الهياكل الأساسية هي الأشكال وترتيبات الأجزاء في الكائنات الحية وغير الحية. مثال: العظام، سيقان النباتات، العوارض والجدران في المباني."
+            ]
+        },
+        th: {
+            title:"เนื้อหาวิทยาศาสตร์",
+            topics:["1. ทักษะทางวิทยาศาสตร์","2. กฎห้องวิทยาศาสตร์","3. สิ่งมีชีวิตและสิ่งไม่มีชีวิต","4. มนุษย์","5. สัตว์","6. พืช","7. แม่เหล็ก","8. การดูดซับ","9. โลก","10. โครงสร้างพื้นฐาน"],
+            sections:[
+                "ทักษะทางวิทยาศาสตร์ช่วยให้เราเรียนรู้โลก ได้แก่ การสังเกต การตั้งคำถาม การทดลอง การบันทึกผล และการคิดอย่างมีเหตุผล",
+                "กฎห้องวิทยาศาสตร์ช่วยให้ปลอดภัย สวมอุปกรณ์ป้องกัน ใช้อุปกรณ์อย่างถูกต้อง ปฏิบัติตามคำสั่ง และรักษาความสะอาด",
+                "สิ่งมีชีวิตเติบโต เคลื่อนไหว สืบพันธุ์ และตอบสนองต่อสิ่งแวดล้อม สิ่งไม่มีชีวิตไม่ทำเช่นนั้น ตัวอย่าง: มนุษย์ สัตว์ พืช vs. หิน น้ำ เก้าอี้",
+                "มนุษย์เป็นสิ่งมีชีวิตที่คิด สื่อสาร และปรับตัวได้ เรียนรู้เกี่ยวกับส่วนของร่างกาย ประสาทสัมผัส สุขภาพ และสุขอนามัย",
+                "สัตว์กินอาหาร เคลื่อนที่ หายใจ และสืบพันธุ์ พวกมันอาศัยอยู่บนบก น้ำ หรืออากาศ และมีโครงสร้างต่างกัน เช่น ขา ปีก หรือครีบ",
+                "พืชเป็นสิ่งมีชีวิตที่สร้างอาหารเอง ให้ก๊าซออกซิเจน และสนับสนุนชีวิต มีราก ลำต้น ใบ ดอก และผลไม้",
+                "แม่เหล็กดึงดูดโลหะบางชนิด เช่น เหล็ก มีขั้วเหนือและใต้ ใช้ในเข็มทิศ อิเล็กทรอนิกส์ และเครื่องมือ",
+                "การดูดซับคือกระบวนการที่สารหนึ่งดูดซับอีกสารหนึ่ง ตัวอย่าง: ฟองน้ำดูดซับน้ำ รากพืชช่วยดูดน้ำและสารอาหาร",
+                "โลกคือดาวเคราะห์ของเรามีพื้นดิน น้ำ อากาศ และชีวิต เรียนรู้เกี่ยวกับทวีป มหาสมุทร สภาพอากาศ และการปกป้องสิ่งแวดล้อม",
+                "โครงสร้างพื้นฐานคือรูปร่างและการจัดเรียงของส่วนต่าง ๆ ในสิ่งมีชีวิตและสิ่งไม่มีชีวิต เช่น กระดูก ลำต้นพืช คานและผนังอาคาร"
+            ]
+        },
+        zh: {
+            title:"科学内容",
+            topics:["1. 科学技能","2. 科学室规则","3. 生物与非生物","4. 人类","5. 动物","6. 植物","7. 磁铁","8. 吸收","9. 地球","10. 基本结构"],
+            sections:[
+                "科学技能帮助我们探索和理解世界，包括观察、提问、实验、记录结果和逻辑思考。",
+                "科学室规则保证安全。穿戴防护装备，正确使用器材，遵守指示，保持清洁。",
+                "生物会生长、移动、繁殖并对环境作出反应。非生物不会。例子：人、动物、植物 vs. 石头、水、椅子。",
+                "人类是有思维、能沟通并能适应环境的生物。学习人体部位、感官、健康和卫生。",
+                "动物进食、移动、呼吸和繁殖。它们生活在陆地、水或空气中，结构各异，如腿、翅膀或鳍。",
+                "植物是生物，会自己制造食物，提供氧气并支持生命。包括根、茎、叶、花和果实。",
+                "磁铁能吸引某些金属如铁。它有北极和南极，常用于指南针、电子产品和工具。",
+                "吸收是物质吸收另一物质的过程。例子：海绵吸水，植物根吸收水和养分。",
+                "地球是我们的星球，有土地、水、空气和生命。学习大陆、海洋、天气和环保知识。",
+                "基本结构是生物和非生物部件的形状和排列。例子：骨骼、植物茎、建筑梁和墙。"
+            ]
+        }
+    };
+
+    function changeLanguage(lang) {
+        const data = content[lang] || content['en'];
+        document.querySelector('h1').textContent = data.title;
+        document.querySelectorAll('.topic').forEach((t,i)=>{ t.textContent = data.topics[i]; });
+        document.querySelectorAll('section').forEach((s,i)=>{ 
+            s.querySelector('h2').textContent = data.topics[i]; 
+            s.querySelector('p').textContent = data.sections[i]; 
+        });
+    }
+</script>
+</head>
+
+<body>
+<div class="header">
+    <div class="lang-container" onclick="toggleMenu()">
+        <div class="lang-icon">🌐</div>
+        <div class="dropdown" id="dropdownMenu">
+            <a href="#" onclick="changeLanguage('en');toggleMenu()">🇬🇧 English</a>
+            <a href="#" onclick="changeLanguage('ms');toggleMenu()">🇲🇾 Malay</a>
+            <a href="#" onclick="changeLanguage('hi');toggleMenu()">🇮🇳 Hindi</a>
+            <a href="#" onclick="changeLanguage('ar');toggleMenu()">🇸🇦 Arabic</a>
+            <a href="#" onclick="changeLanguage('th');toggleMenu()">🇹🇭 Thai</a>
+            <a href="#" onclick="changeLanguage('zh');toggleMenu()">🇨🇳 Chinese</a>
+        </div>
+    </div>
+</div>
+
+<h1>Science Contents</h1>
+
+<div class="container">
+    <div class="topic-list">
+        <a href="topic1.html" class="topic" id="t1">1. Scientific Skills</a>
+        <a href="topic2.html" class="topic" id="t2">2. Science Room Rules</a>
+        <a href="topic3.html" class="topic" id="t3">3. Living and Non-Living Things</a>
+        <a href="topic4.html" class="topic" id="t4">4. Humans</a>
+        <a href="topic5.html" class="topic" id="t5">5. Animals</a>
+        <a href="topic6.html" class="topic" id="t6">6. Plants</a>
+        <a href="topic7.html" class="topic" id="t7">7. Magnet</a>
+        <a href="topic8.html" class="topic" id="t8">8. Absorption</a>
+        <a href="topic9.html" class="topic" id="t9">9. Earth</a>
+        <a href="topic10.html" class="topic" id="t10">10. Basic Structures</a>
+    </div>
+
+   <!-- SECTIONS WITH EXPLANATIONS -->
+   <section id="topic1">
+    <h2>1. Scientific Skills</h2>
+    <p>Scientific skills are abilities that help us explore and understand the world around us. They include observing carefully, asking questions, performing experiments, recording results, and thinking logically. Scientists use these skills to discover new things, solve problems, and explain how things work.</p>
+</section>
+
+<section id="topic2">
+    <h2>2. Science Room Rules</h2>
+    <p>Science room rules are important for safety and learning. They include wearing protective gear like lab coats and goggles, handling equipment properly, following teacher instructions, keeping the workspace clean, and respecting others. Following these rules prevents accidents and ensures experiments go smoothly.</p>
+</section>
+
+<section id="topic3">
+    <h2>3. Living and Non-Living Things</h2>
+    <p>Living things grow, move, reproduce, and respond to their environment, such as humans, animals, and plants. Non-living things do not grow, reproduce, or respond to the environment, like rocks, water, and chairs. Learning to differentiate them helps us understand life on Earth.</p>
+</section>
+
+<section id="topic4">
+    <h2>4. Humans</h2>
+    <p>Humans are living beings with complex bodies, capable of thinking, communicating, and adapting to their surroundings. Learning about humans includes studying body parts, senses, health, and how to maintain a healthy lifestyle through exercise, proper nutrition, and hygiene.</p>
+</section>
+
+<section id="topic5">
+    <h2>5. Animals</h2>
+    <p>Animals are living organisms that eat food, move, breathe, and reproduce. They can live on land, in water, or in the air. Animals have different structures like legs, wings, or fins to help them survive. Some are pets, some are wild, and some help humans in various ways.</p>
+</section>
+
+<section id="topic6">
+    <h2>6. Plants</h2>
+    <p>Plants are living organisms that grow in soil, water, or air. They produce their own food through photosynthesis, provide oxygen, and support life on Earth. Plants include trees, flowers, grasses, and shrubs. Understanding plant parts like roots, stems, leaves, flowers, and fruits is essential for learning about nature.</p>
+</section>
+
+<section id="topic7">
+    <h2>7. Magnet</h2>
+    <p>Magnets are objects that attract certain metals like iron and steel. They have north and south poles and are used in compasses, electronics, and tools. Studying magnets helps us learn about forces and how objects can move without being touched.</p>
+</section>
+
+<section id="topic8">
+    <h2>8. Absorption</h2>
+    <p>Absorption is the process where one substance soaks up or takes in another. For example, a sponge absorbs water. Plants absorb water and nutrients through roots. Absorption is important in everyday life and is essential for living things to survive.</p>
+</section>
+
+<section id="topic9">
+    <h2>9. Earth</h2>
+    <p>Earth is the planet we live on. It has land, water, air, and living organisms. Learning about Earth includes studying continents, oceans, weather, natural resources, and environmental care. Understanding our planet helps us protect it for the future.</p>
+</section>
+
+<section id="topic10">
+    <h2>10. Basic Structures</h2>
+    <p>Basic structures are the shapes and arrangements of parts in living and non-living things. For example, bones provide support to the human body, stems support plants, and buildings have beams and walls. Understanding structures helps us know how things work and stay strong.</p>
+</section>
+</div>
+</body>
+</html>

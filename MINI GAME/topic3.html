@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Living vs Non-Living Sort</title>
+<style>
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: #e8f5e9;
+    text-align: center;
+    padding: 20px;
+  }
+  h1 {
+    color: #388e3c;
+  }
+  .bins {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+  }
+  .bin {
+    width: 180px;
+    min-height: 280px;
+    border: 3px dashed #66bb6a;
+    border-radius: 15px;
+    background: #a5d6a7;
+    padding: 10px;
+  }
+  .bin h2 {
+    color: #2e7d32;
+    margin-bottom: 10px;
+  }
+  .items {
+    margin: 30px auto 0;
+    max-width: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  .item {
+    width: 80px;
+    height: 80px;
+    background: #81c784;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.2);
+  }
+  .item:active {
+    cursor: grabbing;
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #388e3c;
+  }
+  .top-back-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  padding: 8px 16px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+.top-back-btn:hover {
+  background: #1b5e20;
+}
+
+</style>
+</head>
+<body>
+  <button class="top-back-btn" onclick="goBack()">⟵ Back</button>
+
+<h1>Living or Non-Living?</h1>
+<p>Drag each item to the correct box!</p>
+
+<div class="bins">
+  <div class="bin" id="livingBin"><h2>Living</h2></div>
+  <div class="bin" id="nonLivingBin"><h2>Non-Living</h2></div>
+</div>
+
+<div class="items" id="itemsContainer">
+  <div class="item" draggable="true" id="tree">Tree 🌳</div>
+  <div class="item" draggable="true" id="rock">Rock 🪨</div>
+  <div class="item" draggable="true" id="cat">Cat 🐱</div>
+  <div class="item" draggable="true" id="car">Car 🚗</div>
+  <div class="item" draggable="true" id="bird">Bird 🐦</div>
+  <div class="item" draggable="true" id="ball">Ball ⚽</div>
+</div>
+
+<div id="message"></div>
+
+<script>
+  const living = ['tree', 'cat', 'bird'];
+  const nonLiving = ['rock', 'car', 'ball'];
+
+  const livingBin = document.getElementById('livingBin');
+  const nonLivingBin = document.getElementById('nonLivingBin');
+  const itemsContainer = document.getElementById('itemsContainer');
+  const message = document.getElementById('message');
+
+  document.querySelectorAll('.item').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', e.target.id);
+    });
+  });
+
+  function handleDrop(e, bin) {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text/plain');
+    const item = document.getElementById(id);
+
+    if(item && itemsContainer.contains(item)){
+      let correct = false;
+      if(bin === 'living' && living.includes(id)) correct = true;
+      if(bin === 'nonLiving' && nonLiving.includes(id)) correct = true;
+
+      if(correct){
+        if(bin === 'living') livingBin.appendChild(item);
+        else nonLivingBin.appendChild(item);
+        item.style.backgroundColor = '#388e3c';
+        item.style.cursor = 'default';
+        item.setAttribute('draggable', 'false');
+        message.textContent = "Good job! Keep going!";
+        message.style.color = "#2e7d32";
+        checkWin();
+      } else {
+        message.textContent = "Try again!";
+        message.style.color = "#d32f2f";
+      }
+    }
+  }
+
+  function checkWin() {
+    if(livingBin.children.length - 1 === living.length &&
+       nonLivingBin.children.length - 1 === nonLiving.length){
+      message.textContent = "🎉 You sorted all correctly! 🎉";
+    }
+  }
+
+  [livingBin, nonLivingBin].forEach(bin => {
+    bin.addEventListener('dragover', e => e.preventDefault());
+  });
+
+  livingBin.addEventListener('drop', e => handleDrop(e, 'living'));
+  nonLivingBin.addEventListener('drop', e => handleDrop(e, 'nonLiving'));
+  function goBack() {
+  window.history.back();
+}
+
+</script>
+
+</body>
+</html> 

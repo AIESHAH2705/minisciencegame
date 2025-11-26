@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar System Puzzle</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: #000014;
+    color: #fff;
+    text-align: center;
+  }
+
+  h1 {
+    margin-top: 20px;
+    font-size: 40px;
+    color: #ffd54f;
+  }
+
+  /* Back button */
+  .back-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: #ff7043;
+    padding: 10px 18px;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 10px;
+    text-decoration: none;
+    z-index: 100;
+  }
+
+  /* Big picture */
+  .big-image {
+    width: 70%;
+    margin: 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #fff5;
+  }
+
+  /* Layout */
+  .game-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .slot {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #fff;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    font-size: 18px;
+    color: #ffd54f;
+  }
+
+  .planet-img {
+    width: 90px;
+    cursor: grab;
+    background: #fff; /* White background */
+    border-radius: 50%;
+    padding: 5px;
+  }
+
+  .planet-bank {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+  }
+
+  .correct {
+    border-color: #00e676 !important;
+  }
+
+  /* Responsive styles */
+  @media screen and (max-width: 1024px) {
+    .big-image {
+      width: 85%;
+    }
+    .slot {
+      width: 100px;
+      height: 100px;
+      font-size: 16px;
+    }
+    .planet-img {
+      width: 70px;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    h1 {
+      font-size: 28px;
+    }
+    .big-image {
+      width: 100%;
+    }
+    .slot {
+      width: 80px;
+      height: 80px;
+      font-size: 14px;
+    }
+    .planet-img {
+      width: 60px;
+    }
+    .back-btn {
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<a href="javascript:history.back()" class="back-btn">⬅ BACK</a>
+
+<h1>Solar System Puzzle</h1>
+
+<!-- BIG PICTURE -->
+<img src="solar system.jpg" class="big-image">
+
+<p>Drag the planets to their correct position in the Solar System!</p>
+
+<!-- DROP SLOTS (Correct Order) -->
+<div class="game-container">
+  <div class="slot" data-planet="Mercury">Mercury</div>
+  <div class="slot" data-planet="Venus">Venus</div>
+  <div class="slot" data-planet="Earth">Earth</div>
+  <div class="slot" data-planet="Mars">Mars</div>
+  <div class="slot" data-planet="Jupiter">Jupiter</div>
+  <div class="slot" data-planet="Saturn">Saturn</div>
+  <div class="slot" data-planet="Uranus">Uranus</div>
+  <div class="slot" data-planet="Neptune">Neptune</div>
+</div>
+
+<!-- DRAGGABLE IMAGES -->
+<div class="planet-bank">
+  <img src="mercury.jpg" id="Mercury" class="planet-img" draggable="true">
+  <img src="venus.jpg" id="Venus" class="planet-img" draggable="true">
+  <img src="earth.jpg" id="Earth" class="planet-img" draggable="true">
+  <img src="mars.png" id="Mars" class="planet-img" draggable="true">
+  <img src="jupiter.png" id="Jupiter" class="planet-img" draggable="true">
+  <img src="saturn.jpg" id="Saturn" class="planet-img" draggable="true">
+  <img src="uranus.jpg" id="Uranus" class="planet-img" draggable="true">
+  <img src="neptune.png" id="Neptune" class="planet-img" draggable="true">
+</div>
+
+<script>
+  let draggedItem = null;
+
+  // Sound map for planets
+  const planetSounds = {
+    Mercury: new Audio('sounds/mercury.mp3'),
+    Venus: new Audio('sounds/venus.mp3'),
+    Earth: new Audio('sounds/earth.mp3'),
+    Mars: new Audio('sounds/mars.mp3'),
+    Jupiter: new Audio('sounds/jupiter.mp3'),
+    Saturn: new Audio('sounds/saturn.mp3'),
+    Uranus: new Audio('sounds/uranus.mp3'),
+    Neptune: new Audio('sounds/neptune.mp3')
+  };
+
+  document.querySelectorAll(".planet-img").forEach(img => {
+    img.addEventListener("dragstart", function () {
+      draggedItem = this;
+      setTimeout(() => (this.style.opacity = "0.4"), 0);
+    });
+
+    img.addEventListener("dragend", function () {
+      this.style.opacity = "1";
+    });
+  });
+
+  document.querySelectorAll(".slot").forEach(slot => {
+    slot.addEventListener("dragover", e => e.preventDefault());
+
+    slot.addEventListener("drop", function () {
+      if (draggedItem.id === this.dataset.planet) {
+        this.innerHTML = "";
+        this.appendChild(draggedItem);
+        this.classList.add("correct");
+
+        // Play planet sound
+        planetSounds[draggedItem.id].play();
+      } else {
+        alert("Wrong planet! Try again.");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
